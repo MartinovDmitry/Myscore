@@ -20,6 +20,9 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 from db_helper import Base
 from club.models import Club
+from coach.models import Coach
+from league.models import League
+from player.models import Player
 target_metadata = Base.metadata
 # target_metadata = None
 
