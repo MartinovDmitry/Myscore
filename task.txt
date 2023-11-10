@@ -1,0 +1,1 @@
+Exclude default values from Pydantic schemas

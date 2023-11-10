@@ -23,6 +23,7 @@ from club.models import Club
 from coach.models import Coach
 from league.models import League
 from player.models import Player
+from users.models import User
 target_metadata = Base.metadata
 # target_metadata = None
 
