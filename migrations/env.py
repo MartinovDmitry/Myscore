@@ -19,11 +19,11 @@ if config.config_file_name is not None:
 # add your model's MetaData object here
 # for 'autogenerate' support
 from db_helper import Base
-from club.models import Club
-from coach.models import Coach
-from league.models import League
-from player.models import Player
-from users.models import User
+from club.models import Club  # noqa
+from coach.models import Coach  # noqa
+from league.models import League  # noqa
+from player.models import Player  # noqa
+from users.models import User, RefreshToken  # noqa
 target_metadata = Base.metadata
 # target_metadata = None
 
