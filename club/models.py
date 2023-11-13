@@ -15,7 +15,6 @@ class Club(Base):
     date_of_foundation: Mapped[date]
     location: Mapped[str]
     players_quantity: Mapped[int]
-    player_id: Mapped[int] = mapped_column(ForeignKey('players.id'))
     stuff_quantity: Mapped[int]
     coach_name: Mapped[str]
     coach_id: Mapped[str] = mapped_column(ForeignKey('coaches.id'))

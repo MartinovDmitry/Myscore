@@ -17,6 +17,7 @@ class Settings(BaseSettings):
     JWT_KEY: str
     ALGORITHM: str
     JWT_EXPIRE: int
+    REFR_EXPIRE: int
 
     model_config = SettingsConfigDict(env_file='.env')
 

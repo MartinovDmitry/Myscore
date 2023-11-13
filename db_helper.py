@@ -1,3 +1,5 @@
+from typing import Generator
+
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, declared_attr, sessionmaker
 

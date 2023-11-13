@@ -10,4 +10,3 @@ class League(Base):
     league_name: Mapped[str]
     country: Mapped[str]
     clubs_number: Mapped[int]
-    club_id: Mapped[int] = mapped_column(ForeignKey('clubs.id'))

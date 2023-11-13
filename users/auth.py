@@ -2,11 +2,10 @@ import uuid
 from base64 import b64encode
 from datetime import datetime, timedelta
 from secrets import token_bytes
-from jose import jwt, JWTError
+from jose import jwt
 
 from fastapi import HTTPException, status
 from passlib.context import CryptContext
-from pydantic import EmailStr
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 

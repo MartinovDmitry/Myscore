@@ -1,11 +1,12 @@
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 from enum import Enum
 
 from pydantic import EmailStr
-from sqlalchemy import String, text, ForeignKey
+from sqlalchemy import String, text, ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column
 
+from config import settings
 from db_helper import Base
 
 
@@ -39,3 +40,7 @@ class RefreshToken(Base):
 
     refresh_token: Mapped[uuid.uuid4()] = mapped_column(String, unique=True, index=True)
     user_id: Mapped[int] = mapped_column(ForeignKey('users.id'))
+    expire_at: Mapped[int] = mapped_column(default=datetime.utcnow() + timedelta(settings.REFR_EXPIRE))
+    created_at: Mapped[datetime] = mapped_column(
+        server_default=text("TIMEZONE('utc', now())"),
+    )
