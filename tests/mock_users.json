@@ -1,0 +1,12 @@
+[
+  {
+    "username":  "Pavel",
+    "email": "Pavel@example.com",
+    "hashed_password": "$2b$12$XZtQ3oY.o4rh4ENAlOiEAeQySAs8LPwZNvWIgKSd8c031fz6zcC1S"
+  },
+  {
+    "username":  "Oleg",
+    "email": "Oleg@example.com",
+    "hashed_password": "$2b$12$oNlJDijc2mtswwZe0QV3FuqrQRXGULyffhDCbHtvA/gXQiECj1Z3G"
+  }
+]

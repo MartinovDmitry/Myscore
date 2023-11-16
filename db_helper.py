@@ -1,5 +1,6 @@
 from typing import Generator
 
+from sqlalchemy import NullPool
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, declared_attr, sessionmaker
 
@@ -16,11 +17,19 @@ class Base(DeclarativeBase):
         return f'{cls.__name__.lower()}s'
 
 
+if settings.MODE == "TEST":
+    db_url = settings.test_db_url
+    db_params = {'poolclass': NullPool}
+else:
+    db_url = settings.db_url
+    db_params = {'pool_size': 5, 'max_overflow': 15}
+
 engine = create_async_engine(
-    settings.db_url,
+    db_url,
     echo=False,
-    pool_size=5,
-    max_overflow=15,
+    # pool_size=5,
+    # max_overflow=15,
+    **db_params,
 )
 
 async_session = sessionmaker(

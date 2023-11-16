@@ -90,6 +90,11 @@ class Token:
         This func is returning user by payload of refresh (uuid4) tokens
         """
         payload: RefreshToken = await cls.get_payload_from_refresh_token(refresh_token=refresh_token, session=session)
+        if payload.expire_at < datetime.utcnow():
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail={'Message': 'Invalid refresh token. Expire is over'}
+            )
         user_id: int = payload.user_id
         user = await UserDAO.find_one_or_none(id=user_id, session=session)
         if not user:

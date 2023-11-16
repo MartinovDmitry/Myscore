@@ -7,6 +7,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db_helper import session_factory
+from redis_tools import redis_tools
 from users.dependencies import get_current_user
 from users.models import User
 from users.schemas import SchUserRegister, SchUserBase
@@ -79,7 +80,7 @@ async def refresh_access_token(
     return couple_token
 
 
-@router.get('/example')
+@router.get('/current_user')
 async def get_current_user(
         user: User = Depends(get_current_user),
 ) -> SchUserBase:
@@ -90,3 +91,12 @@ async def get_current_user(
     3) Returning current user by access token
     """
     return user
+
+
+@router.post('/')
+async def example(request: Request):
+    ref_token = request.cookies.get('refresh_token')
+    print(ref_token)
+    redis_tools.set_pair('refresh_token', ref_token)
+    res = redis_tools.get_pair('refresh_token')
+    print(res)
