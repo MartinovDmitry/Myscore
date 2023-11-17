@@ -28,6 +28,7 @@ async def test_register_user(
 @pytest.mark.parametrize('username, password, status_code', [
     ('Lena', 'Lena', 200),  # normal case
     ('Lena', 'Lena', 200),  # repeated case
+    ('Lena', 'Lena', 400),  # repeated case
     ('Lena', 'Lenaa', 404),  # case with incorrect pass
     ('', '', 422),  # case with no params
 ])
@@ -42,3 +43,22 @@ async def test_login_user(
         'password': password,
     })
     assert response.status_code == status_code
+
+
+# async def test_logout_user(async_client: AsyncClient):
+#     response = await async_client.post('/auth/logout')
+#     assert response.status_code == 200
+
+# @pytest.mark.parametrize('refresh_token, status_code', [
+#     ('22222-333333-44444-55555', 401)  # Invalid refresh_token
+# ])
+# async def test_refresh_access_token(
+#         refresh_token: str,
+#         status_code: int,
+#         async_client: AsyncClient,
+# ):
+#     response = await async_client.post('/auth/refresh', h={
+#         'refresh_token': refresh_token,
+#     })
+#
+#     assert response.status_code == status_code

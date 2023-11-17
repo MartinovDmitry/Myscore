@@ -10,6 +10,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from config import settings
+from exceptions import WrongUserCredentialsException, InvalidRefreshTokenException, InvalidRefreshTokenExpireException
 from users.dao import UserDAO
 from users.models import RefreshToken, User
 from users.schemas_token import TokenResponse
@@ -77,11 +78,7 @@ class Token:
         payload = await session.execute(query)
         payload = payload.scalar_one_or_none()
         if not payload:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail={'Message': 'Refresh token is invalid'},
-                headers={'WWW-Authenticate': 'Bearer'}
-            )
+            raise InvalidRefreshTokenException
         return payload
 
     @classmethod
@@ -91,17 +88,11 @@ class Token:
         """
         payload: RefreshToken = await cls.get_payload_from_refresh_token(refresh_token=refresh_token, session=session)
         if payload.expire_at < datetime.utcnow():
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail={'Message': 'Invalid refresh token. Expire is over'}
-            )
+            raise InvalidRefreshTokenExpireException
         user_id: int = payload.user_id
         user = await UserDAO.find_one_or_none(id=user_id, session=session)
         if not user:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail={'Message': 'Invalid refresh token'}
-            )
+            raise InvalidRefreshTokenException
         return user
 
 
@@ -118,8 +109,5 @@ async def authenticate_user(
         session=session,
     )
     if existing_user is None or not verify_password(plain_password, existing_user.hashed_password):
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail={'Message': 'Authentication error'}
-        )
+        raise WrongUserCredentialsException
     return existing_user

@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Header
+from fastapi import APIRouter, Depends, Header, status
 from fastapi.responses import Response, JSONResponse
 from fastapi.requests import Request
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -12,7 +12,7 @@ from users.dependencies import get_current_user
 from users.models import User
 from users.schemas import SchUserRegister, SchUserBase
 from users.schemas_token import TokenResponse
-from users.view import login_user_view, refresh_access_token_view, register_user_view
+from users.view import login_user_view, refresh_access_token_view, register_user_view, logout_user_view
 
 router = APIRouter(
     prefix='/auth',
@@ -49,10 +49,11 @@ async def login_user(
     Function's duties:
     1) Checking existing user and validation user's credentials
     2) Creating a couple of tokens: access (jwt) anf refresh (uuid4) tokens
-    3) Adding refresh token in database
-    4) Setting refresh token in cookie
-    5) Updating user in database: is_verified, verified_at
-    6) Returning a couple of tokens and additional info
+    3) Checking count of refreshtokens records in db, should be less than 3
+    4) Adding refresh token in database
+    5) Setting refresh token in cookie
+    6) Updating user in database: is_verified, verified_at
+    7) Returning a couple of tokens and additional info
     """
     couple_token = await login_user_view(
         form_data=form_data,
@@ -60,6 +61,23 @@ async def login_user(
         session=session,
     )
     return couple_token
+
+
+@router.post('/logout')
+async def logout_user(
+        response: Response,
+        request: Request,
+        session: AsyncSession = Depends(session_factory),
+):
+    """
+    Function's duties:
+    1) Getting refresh_token
+    2) Getting payload from refresh_token (user_id)
+    3) Deleting records in db's table refreshtokens
+    4) Deleting cookies
+    """
+    await logout_user_view(response=response, request=request, session=session)
+    return {'Message': 'User logout'}
 
 
 @router.post('/refresh')

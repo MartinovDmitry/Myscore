@@ -2,10 +2,12 @@ from datetime import datetime
 
 from fastapi import HTTPException, status
 from fastapi.responses import Response, JSONResponse
+from fastapi.requests import Request
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from config import settings
+from exceptions import UserAlreadyExistsException
 from users.auth import authenticate_user, token, get_password_hash
 from users.dao import TokenDAO, UserDAO
 from users.models import User
@@ -22,10 +24,7 @@ async def register_user_view(
         session=session,
     )
     if existing_user:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail={'Message': f'User with username {user_data.username} already exists'}
-        )
+        raise UserAlreadyExistsException
     await UserDAO.create_user(
         username=user_data.username,
         email=user_data.email,
@@ -48,6 +47,10 @@ async def login_user_view(
         session=session,
     )
     couple_token = token.get_user_token({'sub': str(user.id)})
+    await TokenDAO.check_count_of_max_report(
+        user_id=user.id,
+        session=session,
+    )
     await TokenDAO.create_token_record_in_db(
         refresh_token=couple_token.refresh_token,
         user_id=user.id,
@@ -62,6 +65,18 @@ async def login_user_view(
     response.set_cookie('refresh_token', couple_token.refresh_token, httponly=True, max_age=settings.JWT_EXPIRE)
     response.set_cookie('access_token', couple_token.access_token, httponly=True)
     return couple_token
+
+
+async def logout_user_view(response: Response, request: Request, session: AsyncSession):
+    # Get refresh_token
+    refresh_token = request.cookies.get('refresh_token')
+    # Get payload from refresh_token (user_id)
+    payload = await token.get_payload_from_refresh_token(refresh_token=refresh_token, session=session)
+    # Delete records in db's table refreshtokens
+    await TokenDAO.delete_token_records_in_db(user_id=payload.user_id, session=session)
+    # Delete cookies
+    response.delete_cookie('access_token')
+    response.delete_cookie('refresh_token')
 
 
 async def refresh_access_token_view(

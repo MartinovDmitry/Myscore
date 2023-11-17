@@ -1,7 +1,11 @@
-from sqlalchemy import select, insert, update
+from typing import NoReturn
+
+from fastapi import HTTPException, status
+from sqlalchemy import select, insert, update, func, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db_helper import async_session
+from exceptions import ALotOfRecordsRefreshTokens
 from users.models import User, RefreshToken
 
 
@@ -46,6 +50,20 @@ class TokenDAO:
         stmt = insert(cls.model).values(**data)
         await session.execute(stmt)
         await session.commit()
+
+    @classmethod
+    async def delete_token_records_in_db(cls, user_id: int, session: AsyncSession):
+        stmt = delete(cls.model).where(cls.model.user_id == user_id)
+        await session.execute(stmt)
+        await session.commit()
+
+    @classmethod
+    async def check_count_of_max_report(cls, user_id: int, session: AsyncSession) -> NoReturn:
+        query = select(func.count(cls.model.refresh_token)).where(cls.model.user_id == user_id)
+        res = await session.execute(query)
+        count = res.scalar_one_or_none()
+        if count == 2:
+            raise ALotOfRecordsRefreshTokens
 
     @classmethod
     async def update_refresh_token(cls, user_id: int, refresh_token: str, session: AsyncSession):
