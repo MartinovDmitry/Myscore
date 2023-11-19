@@ -58,7 +58,7 @@ class TokenDAO:
         await session.commit()
 
     @classmethod
-    async def check_count_of_max_report(cls, user_id: int, session: AsyncSession) -> NoReturn:
+    async def check_count_of_max_record(cls, user_id: int, session: AsyncSession) -> NoReturn:
         query = select(func.count(cls.model.refresh_token)).where(cls.model.user_id == user_id)
         res = await session.execute(query)
         count = res.scalar_one_or_none()

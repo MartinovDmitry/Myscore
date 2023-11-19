@@ -2,9 +2,11 @@ import uuid
 from base64 import b64encode
 from datetime import datetime, timedelta
 from secrets import token_bytes
+from typing import NoReturn
+
 from jose import jwt
 
-from fastapi import HTTPException, status
+from fastapi.responses import Response
 from passlib.context import CryptContext
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -97,6 +99,21 @@ class Token:
 
 
 token = Token()
+
+
+class Cookie:
+    @staticmethod
+    def set_cookies(couple_token: TokenResponse, response: Response) -> NoReturn:
+        response.set_cookie('refresh_token', couple_token.refresh_token, httponly=True, max_age=settings.JWT_EXPIRE)
+        response.set_cookie('access_token', couple_token.access_token, httponly=True)
+
+    @staticmethod
+    def delete_cookies(response: Response):
+        response.delete_cookie('refresh_token')
+        response.delete_cookie('access_token')
+
+
+cookie = Cookie()
 
 
 async def authenticate_user(

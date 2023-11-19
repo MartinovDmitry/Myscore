@@ -82,6 +82,7 @@ async def logout_user(
 
 @router.post('/refresh')
 async def refresh_access_token(
+        response: Response,
         refresh_token: str = Header(),
         session: AsyncSession = Depends(session_factory),
 ) -> TokenResponse:
@@ -92,6 +93,7 @@ async def refresh_access_token(
     3) Updating refresh (uuid4) token in database
     """
     couple_token = await refresh_access_token_view(
+        response=response,
         refresh_token=refresh_token,
         session=session,
     )

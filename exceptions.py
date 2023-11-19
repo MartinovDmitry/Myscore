@@ -15,7 +15,17 @@ class UserAlreadyExistsException(MyscoreException):
     detail = {'Message': 'User already exists'}
 
 
+class AlreadyExistsException(MyscoreException):
+    status_code = status.HTTP_409_CONFLICT
+    detail = {'Message': 'Already exists'}
+
+
 class WrongUserCredentialsException(MyscoreException):
+    status_code = status.HTTP_404_NOT_FOUND
+    detail = {'Message': 'Something wrong with credentials'}
+
+
+class WrongCredentialsException(MyscoreException):
     status_code = status.HTTP_404_NOT_FOUND
     detail = {'Message': 'Something wrong with credentials'}
 

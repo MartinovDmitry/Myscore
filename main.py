@@ -6,9 +6,14 @@ from fastapi.requests import Request
 from fastapi.responses import JSONResponse
 
 from users.router import router as users_router
+from player.router import router as player_router
+from league.router import router as league_router
+
 
 app = FastAPI()
 app.include_router(users_router)
+app.include_router(player_router)
+app.include_router(league_router)
 
 
 @app.exception_handler(ValidationException)

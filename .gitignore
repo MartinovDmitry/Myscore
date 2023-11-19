@@ -1,3 +1,4 @@
 .env
 .idea
 ttt.py
+__pycache__
