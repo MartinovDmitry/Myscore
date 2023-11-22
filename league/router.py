@@ -4,8 +4,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from db_helper import session_factory
 from league.dao import LeagueDAO
-from league.schemas import SchLeagueCreate, SchLeagueResponse, SchLeagueUpdated
-from league.view import get_league_by_title_view, create_league_view, delete_league_view, update_league_view
+from league.schemas import SchLeagueCreate, SchLeagueResponse, SchLeagueUpdated, SchLeagueBase
+from league.view import get_league_by_title_view, create_league_view, delete_league_view, update_league_view, \
+    get_leagues_view
 
 router = APIRouter(
     prefix='/leagues',
@@ -23,6 +24,16 @@ async def get_league_by_title(
         session=session,
     )
     return league
+
+
+@router.get('/')
+async def get_leagues(
+        session: AsyncSession = Depends(session_factory)
+) -> list[SchLeagueResponse]:
+    leagues = await get_leagues_view(
+        session=session
+    )
+    return leagues
 
 
 @router.post('/')

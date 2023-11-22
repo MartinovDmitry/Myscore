@@ -9,7 +9,8 @@ from httpx import AsyncClient
 from main import app as fastapi_app
 from config import settings
 from db_helper import Base, async_session, engine
-from users.models import User
+from users.models import User, RefreshToken
+from league.models import League
 
 
 @pytest_asyncio.fixture(autouse=True, scope='session')
@@ -25,10 +26,14 @@ async def prepare_database():
             return json.load(file)
 
     users = open_mock_json('users')
+    leagues = open_mock_json('leagues')
 
     async with async_session() as session:
         add_users = insert(User).values(users)
+        add_leagues = insert(League).values(leagues)
+
         await session.execute(add_users)
+        await session.execute(add_leagues)
         await session.commit()
 
 

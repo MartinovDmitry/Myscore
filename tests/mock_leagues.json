@@ -1,0 +1,17 @@
+[
+  {
+    "league_name": "LaLiga",
+    "country": "Spain",
+    "clubs_number": 30
+  },
+  {
+    "league_name": "Serie A",
+    "country": "Italy",
+    "clubs_number": 28
+  },
+  {
+    "league_name": "Ligue 1",
+    "country": "France",
+    "clubs_number": 26
+  }
+]

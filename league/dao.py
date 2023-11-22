@@ -15,10 +15,17 @@ class LeagueDAO:
         await session.commit()
 
     @classmethod
+    async def get_leagues(cls, session: AsyncSession):
+        query = select(cls.model)
+        result = await session.execute(query)
+        leagues = result.scalars().all()
+        return leagues
+
+    @classmethod
     async def get_league_by_title(cls, league_name: str, session: AsyncSession):
         query = select(cls.model).where(cls.model.league_name == league_name)
         result = await session.execute(query)
-        league = result.scalars().all()
+        league = result.scalar_one_or_none()
         return league
 
     @classmethod
