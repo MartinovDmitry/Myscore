@@ -41,6 +41,21 @@ class InvalidRefreshTokenExpireException(MyscoreException):
     detail = {'Message': 'Invalid refresh token. Expire is over'}
 
 
+class UserIsNotAuthenticatedException(MyscoreException):
+    status_code = status.HTTP_401_UNAUTHORIZED
+    detail = {'Message': 'You are not authenticated'}
+
+
 class ALotOfRecordsRefreshTokens(MyscoreException):
     status_code = status.HTTP_400_BAD_REQUEST
     detail = {'Message': 'A lot of case of authentication'}
+
+
+class PermissionAdminException(MyscoreException):
+    status_code = status.HTTP_403_FORBIDDEN
+    detail = {'Message': 'You have no permission. Please be sure your role is ADMIN or higher'}
+
+
+class PermissionClientException(MyscoreException):
+    status_code = status.HTTP_403_FORBIDDEN
+    detail = {'Message': 'You have no permission. Please be sure your role is CLIENT or higher'}

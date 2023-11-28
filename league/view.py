@@ -30,6 +30,7 @@ async def create_league_view(
         league: SchLeagueCreate,
         session: AsyncSession,
 ):
+
     await league_is_not_none(
         league_name=league.league_name,
         session=session

@@ -1,11 +1,16 @@
+import json
+from datetime import datetime, timedelta
 from typing import NoReturn
 
 from fastapi import HTTPException, status
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy import select, insert, update, func, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from config import settings
 from db_helper import async_session
 from exceptions import ALotOfRecordsRefreshTokens
+from redis_tools import redis_tools
 from users.models import User, RefreshToken
 
 
@@ -47,9 +52,24 @@ class TokenDAO:
 
     @classmethod
     async def create_token_record_in_db(cls, session: AsyncSession, **data):
+        # Postgres
         stmt = insert(cls.model).values(**data)
         await session.execute(stmt)
         await session.commit()
+
+    @staticmethod
+    async def create_token_record_in_redis(user_id: int, refresh_token: str):
+        refresh_token_record = RefreshToken(
+            refresh_token=refresh_token,
+            user_id=user_id,
+            expire_at=datetime.utcnow() + timedelta(minutes=settings.REFR_EXPIRE),
+            created_at=datetime.utcnow(),
+        )
+        key = f'session:{user_id}'
+        await redis_tools.set_pair(key=key, value=json.dumps(jsonable_encoder(refresh_token_record)), expiry=30)
+        res = await redis_tools.get_pair(key)
+        res = json.loads(res)
+        print(res)
 
     @classmethod
     async def delete_token_records_in_db(cls, user_id: int, session: AsyncSession):

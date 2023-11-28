@@ -44,7 +44,7 @@ async def login_user_view(
         plain_password=form_data.password,
         session=session,
     )
-    couple_token = token.get_user_token({'sub': str(user.id)})
+    couple_token = token.get_user_token({'sub': str(user.id), 'role': str(user.role)})
     await TokenDAO.check_count_of_max_record(
         user_id=user.id,
         session=session,
@@ -53,6 +53,10 @@ async def login_user_view(
         refresh_token=couple_token.refresh_token,
         user_id=user.id,
         session=session,
+    )
+    await TokenDAO.create_token_record_in_redis(
+        refresh_token=couple_token.refresh_token,
+        user_id=user.id,
     )
     await UserDAO.verify_user(
         user_id=user.id,

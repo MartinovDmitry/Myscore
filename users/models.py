@@ -49,4 +49,5 @@ class RefreshToken(Base):
     )
     created_at: Mapped[datetime] = mapped_column(
         server_default=text("TIMEZONE('utc', now())"),
+        default=datetime.utcnow(),
     )

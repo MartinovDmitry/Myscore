@@ -12,3 +12,7 @@ class SchPlayerCreate(BaseModel):
     yellow_cards: int
     red_cards: int
     trophies_num: int
+
+
+class SchPlayerResponse(SchPlayerCreate):
+    pass
