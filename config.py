@@ -46,5 +46,11 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(env_file='.env')
 
+    # SMTP (Background tasks)
+    SMTP_HOST: str
+    SMTP_PORT: int
+    SMTP_USER: str
+    SMTP_PASS: str
+
 
 settings = Settings()

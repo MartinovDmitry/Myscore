@@ -25,7 +25,7 @@ async def get_league_by_title(
         league_name: str,
         session: AsyncSession = Depends(session_factory),
 ) -> SchLeagueResponse:
-    await asyncio.sleep(3)
+    # await asyncio.sleep(3)
     league = await get_league_by_title_view(
         league_name=league_name,
         session=session,

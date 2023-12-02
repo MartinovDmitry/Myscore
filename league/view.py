@@ -1,4 +1,5 @@
 from fastapi import status
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import JSONResponse
 
@@ -23,6 +24,8 @@ async def get_league_by_title_view(
     )
     if league is None:
         raise WrongCredentialsException
+    league_dict = jsonable_encoder(league)
+    print(league_dict)
     return league
 
 

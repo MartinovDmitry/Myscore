@@ -1,0 +1,40 @@
+import smtplib
+from email.message import EmailMessage
+
+from PIL import Image
+from pathlib import Path
+
+from celery import Celery
+from pydantic import EmailStr
+
+from config import settings
+from tasks.email_templates import create_leagues_news
+
+celery = Celery(
+    'tasks',
+    broker=settings.redis_url,
+    include=['tasks.celery_tasks']
+)
+
+
+@celery.task
+def process_pic(
+        path: str,
+):
+    image_path = Path(path)
+    image = Image.open(path)
+    image_resized_1000_500 = image.resize((1000, 500))
+    image_resized_200_100 = image.resize((200, 100))
+    image_resized_1000_500.save(f'static/images/resized_1000_500_{image_path.name}')
+    image_resized_200_100.save(f'static/images/resized_200_100_{image_path.name}')
+
+
+# @celery.tasks
+# def send_leagues_news(leagues: dict, email_to: EmailStr):
+#     email_to_mock = settings.SMTP_USER
+#     msg_content = create_leagues_news(
+#         leagues=leagues, email_to=email_to_mock
+#     )
+#     with smtplib.SMTP_SSL(settings.SMTP_HOST, settings.SMTP_PORT) as server:
+#         server.login(settings.SMTP_USER, settings.SMTP_PASS)
+#         server.send_message(msg_content)
