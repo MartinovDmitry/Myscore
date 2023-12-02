@@ -18,4 +18,5 @@ class ClubDAO:
     async def get_club_by_title(cls, title: str, session: AsyncSession):
         query = select(cls.model).where(cls.model.title == title)
         result = await session.execute(query)
-        return result
+        club = result.scalar_one_or_none()
+        return club

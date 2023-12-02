@@ -1,7 +1,12 @@
+from fastapi.encoders import jsonable_encoder
+from pydantic import parse_obj_as, TypeAdapter
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from club.dao import ClubDAO
-from club.schemas import SchClubCreate
+from club.models import Club
+from club.schemas import SchClubCreate, SchClubResponse
+from exceptions import WrongCredentialsException
+from tasks.celery_tasks import send_news
 
 
 async def create_club_view(
@@ -18,9 +23,13 @@ async def get_club_by_title_view(
         title: str,
         session: AsyncSession,
 ):
-    result = await ClubDAO.get_club_by_title(
+    club = await ClubDAO.get_club_by_title(
         title=title,
         session=session,
     )
-    club = result.scalar_one_or_none()
+    if club is None:
+        raise WrongCredentialsException
+    clubs_adapter = TypeAdapter(SchClubResponse)
+    club_dict = clubs_adapter.validate_python(jsonable_encoder(club)).model_dump()
+    send_news(class_obj=Club, content=club_dict, email_to='some_email')
     return club

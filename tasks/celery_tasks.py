@@ -8,7 +8,7 @@ from celery import Celery
 from pydantic import EmailStr
 
 from config import settings
-from tasks.email_templates import create_leagues_news
+from tasks.email_templates import CreateNews
 
 celery = Celery(
     'tasks',
@@ -29,12 +29,14 @@ def process_pic(
     image_resized_200_100.save(f'static/images/resized_200_100_{image_path.name}')
 
 
-# @celery.tasks
-# def send_leagues_news(leagues: dict, email_to: EmailStr):
-#     email_to_mock = settings.SMTP_USER
-#     msg_content = create_leagues_news(
-#         leagues=leagues, email_to=email_to_mock
-#     )
-#     with smtplib.SMTP_SSL(settings.SMTP_HOST, settings.SMTP_PORT) as server:
-#         server.login(settings.SMTP_USER, settings.SMTP_PASS)
-#         server.send_message(msg_content)
+@celery.task
+def send_news(class_obj, content: dict, email_to: EmailStr):
+    email_to_mock = settings.SMTP_USER
+    create_news = CreateNews(class_obj)
+    msg_content = create_news.create_news(
+        content=content,
+        email_to=email_to_mock,
+    )
+    with smtplib.SMTP_SSL(settings.SMTP_HOST, settings.SMTP_PORT) as server:
+        server.login(settings.SMTP_USER, settings.SMTP_PASS)
+        server.send_message(msg_content)
