@@ -1,10 +1,12 @@
+import json
+
 from fastapi import status
 from fastapi.encoders import jsonable_encoder
 from pydantic import TypeAdapter
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import JSONResponse
 
-from exceptions import WrongCredentialsException, AlreadyExistsException
+from exceptions import WrongCredentialsException
 from league.dao import LeagueDAO
 from league.dependensies import league_is_not_none, league_is_none
 from league.models import League
@@ -29,7 +31,7 @@ async def get_league_by_title_view(
         raise WrongCredentialsException
     leagues_adapter = TypeAdapter(SchLeagueResponse)
     league_dict = leagues_adapter.validate_python(jsonable_encoder(league)).model_dump()
-    send_news(class_obj=League, content=league_dict, email_to='some_email')
+    send_news.delay(content=league_dict, email_to='some_email')
     return league
 
 

@@ -31,5 +31,5 @@ async def get_club_by_title_view(
         raise WrongCredentialsException
     clubs_adapter = TypeAdapter(SchClubResponse)
     club_dict = clubs_adapter.validate_python(jsonable_encoder(club)).model_dump()
-    send_news(class_obj=Club, content=club_dict, email_to='some_email')
+    send_news.delay(content=club_dict, email_to='some_email')
     return club
