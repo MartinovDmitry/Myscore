@@ -4,13 +4,16 @@ from config import settings
 
 
 class CreateNews:
-    @staticmethod
+    def __init__(self, title: str):
+        self.title = title
+
     def create_news(
+            self,
             content: dict,
             email_to: EmailMessage,
     ):
         email = EmailMessage()
-        email['Subject'] = f'Interesting news'
+        email['Subject'] = f'Interesting news about {self.title}'
         email['From'] = settings.SMTP_USER
         email['To'] = email_to
         email.set_content(

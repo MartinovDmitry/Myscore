@@ -30,9 +30,9 @@ def process_pic(
 
 
 @celery.task
-def send_news(content: dict, email_to: EmailStr):
+def send_news(title: str, content: dict, email_to: EmailStr):
     email_to_mock = settings.SMTP_USER
-    create_news = CreateNews()
+    create_news = CreateNews(title=title)
     msg_content = create_news.create_news(
         content=content,
         email_to=email_to_mock,
