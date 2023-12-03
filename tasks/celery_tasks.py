@@ -8,16 +8,20 @@ from celery import Celery
 from pydantic import EmailStr
 
 from config import settings
+from tasks.celeryconfig import celery_config
 from tasks.email_templates import CreateNews
 
 celery = Celery(
     'tasks',
-    broker=settings.redis_url,
-    include=['tasks.celery_tasks']
+    # backend=settings.redis_url,
+    # broker=settings.redis_url,
+    # include=['tasks.celery_tasks']
 )
 
+celery.config_from_object(celery_config, namespace='CELERY')
 
-@celery.task
+
+@celery.task(ignore_result=True)
 def process_pic(
         path: str,
 ):

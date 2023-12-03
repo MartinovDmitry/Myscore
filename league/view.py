@@ -31,7 +31,8 @@ async def get_league_by_title_view(
         raise WrongCredentialsException
     leagues_adapter = TypeAdapter(SchLeagueResponse)
     league_dict = leagues_adapter.validate_python(jsonable_encoder(league)).model_dump()
-    send_news.delay(title=League.__tablename__, content=league_dict, email_to='some_email')
+    send_news.apply_async((League.__tablename__, league_dict, 'some_email'), queue='celery')
+    # send_news.delay(title=League.__tablename__, content=league_dict, email_to='some_email')
     return league
 
 
