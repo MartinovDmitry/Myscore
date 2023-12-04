@@ -1,3 +1,5 @@
+from asyncio import Task
+
 from kombu import Queue
 
 from config import settings
