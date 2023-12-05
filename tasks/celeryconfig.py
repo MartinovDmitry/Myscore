@@ -1,5 +1,3 @@
-from asyncio import Task
-
 from kombu import Queue
 
 from config import settings
@@ -8,7 +6,7 @@ from config import settings
 class CeleryConfig:
     broker_url = settings.redis_url
     result_backend = settings.redis_url
-    include: list = ['tasks.celery_tasks']
+    include: list = ['tasks.celery_tasks', 'tasks.schedule_tasks']
     # enable_utc = True
     # timezone = 'Europe/London'
     task_default_queue = 'celery'
@@ -28,6 +26,13 @@ class CeleryConfig:
     broker_connection_retry = True
     broker_connection_retry_on_startup = True
     broker_connection_max_retries = 10
+    beat_schedule = {
+        'add-connection-every-10-seconds': {
+            'task': 'tasks.schedule_tasks.checking_connection',
+            'schedule': 10,
+            'args': (1, 2,),
+        }
+    }
 
 
 celery_config = CeleryConfig()
