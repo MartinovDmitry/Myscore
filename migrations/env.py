@@ -24,6 +24,7 @@ from coach.models import Coach  # noqa
 from league.models import League  # noqa
 from player.models import Player  # noqa
 from users.models import User, RefreshToken  # noqa
+from payment_system.models import Payment  # noqa
 target_metadata = Base.metadata
 # target_metadata = None
 
