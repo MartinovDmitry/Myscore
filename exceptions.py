@@ -59,3 +59,8 @@ class PermissionAdminException(MyscoreException):
 class PermissionClientException(MyscoreException):
     status_code = status.HTTP_403_FORBIDDEN
     detail = {'Message': 'You have no permission. Please be sure your role is CLIENT or higher'}
+
+
+class PermissionVerifiedException(MyscoreException):
+    status_code = status.HTTP_403_FORBIDDEN
+    detail = {'Message': 'You have to be verified. Please, log in'}

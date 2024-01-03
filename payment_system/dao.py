@@ -19,7 +19,10 @@ class PaymentDAO:
             stmt = (
                 update(cls.model)
                 .where(cls.model.user_id == user_id)
-                .values(cls.model.count == cls.model.count + count)
+                .values(
+                    count=cls.model.count + count,
+                    replenishment_at=datetime.utcnow()
+                )
             )
             await session.execute(stmt)
             await session.commit()

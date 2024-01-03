@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db_helper import session_factory
+from payment_system.permission import check_permission_for_replenishment
 from payment_system.view import replenishment_of_the_balance_view
 
 router = APIRouter(
