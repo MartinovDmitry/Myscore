@@ -17,3 +17,4 @@ class Player(Base):
     yellow_cards: Mapped[int]
     red_cards: Mapped[int]
     trophies_num: Mapped[int]
+    rating: Mapped[int] = mapped_column(nullable=False)

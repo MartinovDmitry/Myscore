@@ -15,6 +15,7 @@ class SchClubCreate(BaseModel):
     coach_id: Optional[int | None] = None
     league_name: str
     league_id: int
+    rating: int
 
 
 class SchClubResponse(SchClubCreate):

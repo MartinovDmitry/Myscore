@@ -21,3 +21,4 @@ class Club(Base):
     coach_id: Mapped[Optional[str | None]] = mapped_column(ForeignKey('coaches.id'))
     league_name: Mapped[str]
     league_id: Mapped[int] = mapped_column(ForeignKey('leagues.id'))
+    rating: Mapped[int] = mapped_column(nullable=False)

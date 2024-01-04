@@ -13,5 +13,5 @@ class Coach(Base):
     country_birth: Mapped[str]
     earlier_clubs = Mapped[list[str]]
     current_club: Mapped[str]
-    club_id: Mapped[int] = mapped_column(ForeignKey('clubs.id'))
+    # club_id: Mapped[int] = mapped_column(ForeignKey('clubs.id'))
     salary: Mapped[int]

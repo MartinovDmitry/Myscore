@@ -28,7 +28,7 @@ class Permission:
     def check_role_admin_of_user(cls, request: Request):
         payload: dict = cls.get_payload_from_cookie(request=request)
         role = payload['role'][5:]
-        if role is not Role.ADMIN:
+        if role is not Role.ADMIN.value:
             raise PermissionAdminException
         return role
 
