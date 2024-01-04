@@ -41,21 +41,3 @@ async def get_schedule_of_team_view(
                         count += 1
                         break
             return schedules_list
-
-# async def get_schedule_of_team_view(
-#         team_title: str,
-#         limit: int,
-#         sport_id: int,
-# ):
-#     schedule_part = f"v1/sports/{sport_id}/schedule"
-#     response = requests.get(url=base_url + schedule_part, headers=sports_headers)
-#     json_response: dict[str, list[dict]] = response.json()
-#     schedules_list = list()
-#     count = 0
-#     for schedule in json_response.get('schedules'):  # type: dict
-#         for key, value in schedule.items():
-#             if value == team_title and count != limit:
-#                 schedules_list.append(schedule)
-#                 count += 1
-#                 break
-#     return schedules_list
