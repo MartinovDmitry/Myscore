@@ -17,12 +17,14 @@ sports_headers = {
 }
 
 
-# Endpoint for getting all kinds of sports
 @router.get('/sports')
 async def get_sports():
+    """
+    Endpoint for getting all kinds of sports
+    """
     sports_part = "v1/sports"
     response = requests.get(url=base_url + sports_part, headers=sports_headers)
-    return response.json()
+    return response.json().get('sports')
 
 
 @router.get('/sports/{sport_id}/team')
