@@ -3,6 +3,8 @@ from typing import Optional
 import requests
 from fastapi import APIRouter, Path, Query
 
+from bets.view import get_main_data_about_team_view, get_schedule_of_team_view
+
 router = APIRouter(
     prefix='/bets',
     tags=['Bets'],
@@ -33,15 +35,11 @@ async def get_main_data_about_team(
     :param sport_id: ID for spain Premier League (14)
     :return: Required team or None, if your title is invalid
     """
-    team_part = f"v1/sports/{sport_id}/teams"
-    response = requests.get(url=base_url + team_part, headers=sports_headers)
-    json_response: dict[str, list[dict]] = response.json()
-    for team in json_response.get('teams'):  # type: dict
-        for key, value in team.items():
-            if value == team_title:
-                print(team)
-                return team
-    return None
+    result = await get_main_data_about_team_view(
+        team_title=team_title,
+        sport_id=sport_id,
+    )
+    return result
 
 
 @router.get('/sports/{sport_id}/schedule')
@@ -57,18 +55,12 @@ async def get_schedule_of_team(
     :param sport_id: ID for spain Premier League (14)
     :return: Schedule for team by title
     """
-    schedule_part = f"v1/sports/{sport_id}/schedule"
-    response = requests.get(url=base_url + schedule_part, headers=sports_headers)
-    json_response: dict[str, list[dict]] = response.json()
-    schedules_list = list()
-    count = 0
-    for schedule in json_response.get('schedules'):  # type: dict
-        for key, value in schedule.items():
-            if value == team_title and count != limit:
-                schedules_list.append(schedule)
-                count += 1
-                break
-    return schedules_list
+    result = await get_schedule_of_team_view(
+        team_title=team_title,
+        limit=limit,
+        sport_id=sport_id,
+    )
+    return result
 
 
 # Endpoint for getting event

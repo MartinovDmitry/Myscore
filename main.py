@@ -20,7 +20,7 @@ from player.router import router as player_router
 from league.router import router as league_router
 from club.router import router as club_router
 from payment_system.router import router as payment_router
-from bets.example import router as bet_router
+from bets.router import router as bet_router
 
 from pages.router import router as pages_router
 from images.router import router as images_router
