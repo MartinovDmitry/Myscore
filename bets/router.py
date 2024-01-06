@@ -1,10 +1,12 @@
+from datetime import datetime
 from typing import Optional
 
 import requests
 from fastapi import APIRouter, Path, Query
 
-from bets.schemas import SchResponseTeamInfo, SchResponseScheduleInfo
-from bets.view import get_main_data_about_team_view, get_schedule_of_team_view
+from bets.bets_schemas import SchEventsResponse
+from bets.data_schemas import SchResponseTeamInfo, SchResponseScheduleInfo
+from bets.view import get_main_data_about_team_view, get_schedule_of_team_view, get_events_for_sport_view
 
 router = APIRouter(
     prefix='/bets',
@@ -66,17 +68,13 @@ async def get_schedule_of_team(
     return result
 
 
-# Endpoint for getting event
-@router.get('/event/{event_id}')
-async def get_event_by_id(event_id: int):
-    event_part = f"v2/events/{event_id}"
-    response = requests.get(url=base_url + event_part, headers=sports_headers)
-    return response.json()
-
-
-# Endpoint for getting event
-@router.get('/stats')
-async def get_stats(sport_id: int):
-    event_part = "v2/stats"
-    response = requests.get(url=base_url + event_part, headers=sports_headers)
-    return response.json()
+@router.get('/sports/{sport_id}/events/{date}')
+async def get_events_for_sport(
+        sport_id: int,
+        date: str,
+) -> list[SchEventsResponse]:
+    result = await get_events_for_sport_view(
+        sport_id=sport_id,
+        date=date,
+    )
+    return result

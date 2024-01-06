@@ -1,3 +1,5 @@
+from pprint import pprint
+
 import aiohttp
 import requests
 
@@ -11,7 +13,7 @@ async def get_main_data_about_team_view(
         team_title: str,
         sport_id: int,
 ):
-    team_part = f"v1/sports/{sport_id}/teams"
+    team_part = f"v2/sports/{sport_id}/teams"
     async with aiohttp.ClientSession() as session:
         async with session.get(url=base_url + team_part, headers=sports_headers) as response:
             json_response: dict[str, list[dict]] = await response.json()
@@ -41,3 +43,15 @@ async def get_schedule_of_team_view(
                         count += 1
                         break
             return schedules_list
+
+
+async def get_events_for_sport_view(
+        sport_id: int,
+        date: str,
+):
+    event_part = f'/v1/sports/{sport_id}/events/{date}'
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url=base_url + event_part, headers=sports_headers) as response:
+            json_response = await response.json()
+            pprint(json_response)
+            return json_response.get('events')

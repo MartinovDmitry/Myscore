@@ -6,6 +6,10 @@ class SchResponseConferenceInfo(BaseModel):
 
 
 class SchResponseTeamInfo(BaseModel):
+    """
+    for get_main_data_about_team() func
+    """
+    team_id: int
     name: str
     abbreviation: str
     record: str
@@ -13,6 +17,9 @@ class SchResponseTeamInfo(BaseModel):
 
 
 class SchResponseScheduleInfo(BaseModel):
+    """
+    for get_schedule_of_team() func
+    """
     league_name: str
     season_type: str
     event_name: str
