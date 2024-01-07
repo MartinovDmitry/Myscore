@@ -1,3 +1,4 @@
+import sys
 from datetime import datetime
 from typing import Optional
 
@@ -84,3 +85,16 @@ async def get_events_for_sport(
         date=date,
     )
     return result
+
+
+@router.post('/bets/events')
+async def place_a_bet():
+    """
+    Function's duties:
+    1) Call the func get_events_for_sport_view() for result
+    2) Get the moneyline from the returned dictionary
+    3) Convert moneyline to the ratio
+    4) Create a record with bet in DB
+    5) Take into account the funds allocated for the bet in the table with the count
+    """
+    result = get_events_for_sport_view

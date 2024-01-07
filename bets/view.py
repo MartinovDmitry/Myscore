@@ -1,7 +1,11 @@
+import json
 from pprint import pprint
 
 import aiohttp
 import requests
+from fastapi.encoders import jsonable_encoder
+
+from redis_tools import redis_tools
 
 base_url = "https://therundown-inc.api.blobr.app/free-trial/"
 sports_headers = {
@@ -53,5 +57,7 @@ async def get_events_for_sport_view(
     async with aiohttp.ClientSession() as session:
         async with session.get(url=base_url + event_part, headers=sports_headers) as response:
             json_response = await response.json()
-            pprint(json_response)
-            return json_response.get('events')
+            events = json_response.get('events')
+            key = f'event: {sport_id}'
+            await redis_tools.set_pair(key=key, value=json.dumps(jsonable_encoder(events)), expiry=300)
+            return events
