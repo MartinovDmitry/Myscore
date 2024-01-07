@@ -56,7 +56,7 @@ async def get_schedule_of_team(
     """
     Endpoint for getting team's schedule by title in chosen sport by id
     :param team_title: The title of team for schedule
-    :param limit: optional param for limit
+    :param limit: Optional param for limit
     :param sport_id: ID for spain Premier League (14)
     :return: Schedule for team by title
     """
@@ -73,6 +73,12 @@ async def get_events_for_sport(
         sport_id: int,
         date: str,
 ) -> list[SchEventsResponse]:
+    """
+    Endpoint for getting main info about event with bets in desired date
+    :param sport_id: ID for spain Premier League (14)
+    :param date: Desired date
+    :return: Main Info about event with bets
+    """
     result = await get_events_for_sport_view(
         sport_id=sport_id,
         date=date,
