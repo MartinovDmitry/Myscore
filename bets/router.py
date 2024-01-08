@@ -1,5 +1,3 @@
-import sys
-from datetime import datetime
 from typing import Optional
 
 import requests
@@ -7,9 +5,10 @@ from fastapi import APIRouter, Path, Query, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from bets.bets_schemas import SchEventsResponse
-from bets.data_schemas import SchResponseTeamInfo, SchResponseScheduleInfo
-from bets.view import get_main_data_about_team_view, get_schedule_of_team_view, get_events_for_sport_view, \
-    place_a_bet_view
+from bets.view import (get_and_record_in_db_main_data_about_team_view,
+                       get_and_record_in_db_schedule_of_team_view,
+                       get_events_for_sport_view,
+                       place_a_bet_view)
 from db_helper import session_factory
 
 router = APIRouter(
@@ -38,7 +37,7 @@ async def get_and_record_in_db_main_data_about_team(
         sport_id: int = Path(),
         session: AsyncSession = Depends(session_factory),
 ):
-    result = await get_main_data_about_team_view(
+    result = await get_and_record_in_db_main_data_about_team_view(
         sport_id=sport_id,
         session=session,
     )
@@ -46,22 +45,17 @@ async def get_and_record_in_db_main_data_about_team(
 
 
 @router.get('/sports/{sport_id}/schedule')
-async def get_schedule_of_team(
+async def get_and_record_in_db_schedule_of_team(
         team_title: str = Query(default='Real Madrid'),
         limit: int = Optional[Query()],
         sport_id: int = Path(),
-):  # -> list[SchResponseScheduleInfo]:
-    """
-    Endpoint for getting team's schedule by title in chosen sport by id
-    :param team_title: The title of team for schedule
-    :param limit: Optional param for limit
-    :param sport_id: ID for spain Premier League (14)
-    :return: Schedule for team by title
-    """
-    result = await get_schedule_of_team_view(
+        session: AsyncSession = Depends(session_factory),
+):
+    result = await get_and_record_in_db_schedule_of_team_view(
         team_title=team_title,
         limit=limit,
         sport_id=sport_id,
+        session=session,
     )
     return result
 

@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 
 from sqlalchemy import ForeignKey, func
 from sqlalchemy.orm import mapped_column, Mapped
@@ -11,11 +12,11 @@ class PremierLeagueSchedule(Base):
 
     home_team: Mapped[str] = mapped_column()
     away_team: Mapped[str] = mapped_column()
-    home_team_id: Mapped[int] = mapped_column(ForeignKey('clubs.id'))
-    away_team_id: Mapped[int] = mapped_column(ForeignKey('clubs.id'))
+    home_team_id: Mapped[int] = mapped_column(ForeignKey('premier_league_clubs.id'))
+    away_team_id: Mapped[int] = mapped_column(ForeignKey('premier_league_clubs.id'))
     date_event: Mapped[datetime] = mapped_column()
-    home_score: Mapped[int] = mapped_column(default=0)
-    away_score: Mapped[int] = mapped_column(default=0)
+    home_score: Mapped[Optional[int]] = mapped_column(default=0)
+    away_score: Mapped[Optional[int]] = mapped_column(default=0)
     league_name: Mapped[str]
     #  --Can't found the solution for concatenation values of columns-- #
     # event_name: Mapped[str] = mapped_column(
