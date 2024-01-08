@@ -3,11 +3,14 @@ from datetime import datetime
 from typing import Optional
 
 import requests
-from fastapi import APIRouter, Path, Query
+from fastapi import APIRouter, Path, Query, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from bets.bets_schemas import SchEventsResponse
 from bets.data_schemas import SchResponseTeamInfo, SchResponseScheduleInfo
-from bets.view import get_main_data_about_team_view, get_schedule_of_team_view, get_events_for_sport_view
+from bets.view import get_main_data_about_team_view, get_schedule_of_team_view, get_events_for_sport_view, \
+    place_a_bet_view
+from db_helper import session_factory
 
 router = APIRouter(
     prefix='/bets',
@@ -31,19 +34,13 @@ async def get_sports():
 
 
 @router.get('/sports/{sport_id}/team')
-async def get_main_data_about_team(
-        team_title: str = Query(default='Real Madrid'),
+async def get_and_record_in_db_main_data_about_team(
         sport_id: int = Path(),
-) -> SchResponseTeamInfo | None:
-    """
-    Endpoint for getting team by title in chosen sport by id
-    :param team_title: The title of required team
-    :param sport_id: ID for spain Premier League (14)
-    :return: Required team or None, if your title is invalid
-    """
+        session: AsyncSession = Depends(session_factory),
+):
     result = await get_main_data_about_team_view(
-        team_title=team_title,
         sport_id=sport_id,
+        session=session,
     )
     return result
 
@@ -53,7 +50,7 @@ async def get_schedule_of_team(
         team_title: str = Query(default='Real Madrid'),
         limit: int = Optional[Query()],
         sport_id: int = Path(),
-) -> list[SchResponseScheduleInfo]:
+):  # -> list[SchResponseScheduleInfo]:
     """
     Endpoint for getting team's schedule by title in chosen sport by id
     :param team_title: The title of team for schedule
@@ -88,7 +85,13 @@ async def get_events_for_sport(
 
 
 @router.post('/bets/events')
-async def place_a_bet():
+async def place_a_bet(
+        sport_id: int,
+        date: str,
+        # event: str,
+        # full_time_result: str,
+        # count: int
+):
     """
     Function's duties:
     1) Call the func get_events_for_sport_view() for result
@@ -97,4 +100,5 @@ async def place_a_bet():
     4) Create a record with bet in DB
     5) Take into account the funds allocated for the bet in the table with the count
     """
-    result = get_events_for_sport_view
+    result = await place_a_bet_view(sport_id=sport_id, date=date)
+    return result

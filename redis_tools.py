@@ -13,8 +13,8 @@ class RedisTools:
         await cls.async_redis.set(key, value, expiry)
 
     @classmethod
-    async def get_pair(cls, pair: str):
-        return await cls.async_redis.get(pair)
+    async def get_pair(cls, key: str):
+        return await cls.async_redis.get(key)
 
 
 redis_tools = RedisTools()

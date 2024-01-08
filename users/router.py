@@ -111,12 +111,3 @@ async def get_current_user(
     3) Returning current user by access token
     """
     return user
-
-
-@router.post('/')
-async def example(request: Request):
-    ref_token = request.cookies.get('refresh_token')
-    print(ref_token)
-    redis_tools.set_pair('refresh_token', ref_token)
-    res = redis_tools.get_pair('refresh_token')
-    print(res)

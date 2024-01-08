@@ -25,6 +25,8 @@ from league.models import League  # noqa
 from player.models import Player  # noqa
 from users.models import User, RefreshToken  # noqa
 from payment_system.models import Payment  # noqa
+from bets_club.models import PremierLeagueClub  # noqa
+from bets_schedule.models import PremierLeagueSchedule  # noqa
 target_metadata = Base.metadata
 # target_metadata = None
 

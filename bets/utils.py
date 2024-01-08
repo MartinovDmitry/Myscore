@@ -1,3 +1,15 @@
+import json
+from enum import Enum
+
+from redis_tools import redis_tools
+
+
+class EventsMoneyLine(str, Enum):
+    moneyline_home = '1'
+    moneyline_away = '2'
+    moneyline_draw = 'X'
+
+
 class OddConverter:
     __ratio = 100
 
@@ -21,4 +33,15 @@ class OddConverter:
 
 odd_converter = OddConverter()
 
-print(odd_converter.converter(-50))
+
+async def check_events_in_redis(sport_id: int):
+    key = f'event: {sport_id}'
+    cached_result = await redis_tools.get_pair(key=key)
+    if cached_result:
+        return json.loads(cached_result)
+    else:
+        return None
+
+
+def func(events: list):
+    pass
