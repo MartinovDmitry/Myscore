@@ -21,6 +21,7 @@ from league.router import router as league_router
 from club.router import router as club_router
 from payment_system.router import router as payment_router
 from bets.router import router as bet_router
+from bets_schedule.router import router as schedule_router
 
 from pages.router import router as pages_router
 from images.router import router as images_router
@@ -44,6 +45,7 @@ app.include_router(league_router)
 app.include_router(club_router)
 app.include_router(payment_router)
 app.include_router(bet_router)
+app.include_router(schedule_router)
 
 app.include_router(pages_router)
 app.include_router(images_router)
