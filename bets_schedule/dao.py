@@ -26,4 +26,5 @@ class DAOSchedule:
         cte = select(sub_query)
         result = await session.execute(cte)
         schedule = result.all()
+        print(schedule)
         return schedule
