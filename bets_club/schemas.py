@@ -5,6 +5,6 @@ from pydantic import BaseModel
 
 class SchStandingsResponse(BaseModel):
     name: str
-    total_matches: Optional[int]
+    total_matches: Optional[int] = None
     record: str
-    points: Optional[int]
+    points: Optional[int] = None

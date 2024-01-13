@@ -13,9 +13,7 @@ class DAOClub:
         query = (
             select(
                 pl_club.name,
-                null().label('total_matches'),
                 pl_club.record,
-                null().label('points')
             )
         )
         result = await session.execute(query)

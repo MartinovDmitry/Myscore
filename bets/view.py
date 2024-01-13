@@ -13,7 +13,7 @@ from redis_tools import redis_tools
 
 base_url = "https://therundown-inc.api.blobr.app/free-trial/"
 sports_headers = {
-  "X-BLOBR-KEY": "aKO5IueHAFFu5TZv8xJomNXu6GQsaZ1T"
+  "X-BLOBR-KEY": "Ur9jqPC1lD5aIai6p8RKmvqJDu9he9TX"
 }
 
 

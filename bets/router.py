@@ -18,7 +18,7 @@ router = APIRouter(
 
 base_url = "https://therundown-inc.api.blobr.app/free-trial/"
 sports_headers = {
-  "X-BLOBR-KEY": "aKO5IueHAFFu5TZv8xJomNXu6GQsaZ1T"
+  "X-BLOBR-KEY": "Ur9jqPC1lD5aIai6p8RKmvqJDu9he9TX"
 }
 
 
@@ -64,7 +64,7 @@ async def get_and_record_in_db_schedule_of_team(
 async def get_events_for_sport(
         sport_id: int,
         date: str,
-) -> list[SchEventsResponse]:
+) -> SchEventsResponse:
     """
     Endpoint for getting main info about event with bets in desired date
     :param sport_id: ID for spain Premier League (14)
@@ -75,7 +75,7 @@ async def get_events_for_sport(
         sport_id=sport_id,
         date=date,
     )
-    return result
+    return result[1]
 
 
 @router.post('/bets/events')
